@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
   Platform
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import * as Clipboard from 'expo-clipboard';
@@ -24,6 +23,9 @@ import { processImage } from '../services/api';
 import { preprocessImage } from '../utils/imageUtils';
 import { saveToHistory, getSettings } from '../services/storage';
 import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
+
+// カスタムコンポーネント
+import { CustomPicker } from '../components/CustomPicker';
 
 const HomeScreen = () => {
   // 状態管理
@@ -318,70 +320,46 @@ const HomeScreen = () => {
 
         {/* 文章のトーン */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>文章のトーン</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedTone}
-              onValueChange={setSelectedTone}
-              style={styles.picker}
-              enabled={!loading}
-            >
-              {TEXT_TONES.map(tone => (
-                <Picker.Item key={tone.value} label={tone.label} value={tone.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="文章のトーン"
+            selectedValue={selectedTone}
+            onValueChange={setSelectedTone}
+            options={TEXT_TONES}
+            disabled={loading}
+          />
         </View>
 
         {/* 文章のスタイル */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>文章のスタイル</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedStyle}
-              onValueChange={setSelectedStyle}
-              style={styles.picker}
-              enabled={!loading}
-            >
-              {TEXT_STYLES.map(style => (
-                <Picker.Item key={style.value} label={style.label} value={style.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="文章のスタイル"
+            selectedValue={selectedStyle}
+            onValueChange={setSelectedStyle}
+            options={TEXT_STYLES}
+            disabled={loading}
+          />
         </View>
 
         {/* ハッシュタグの量 */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>ハッシュタグの量</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={hashtagAmount}
-              onValueChange={setHashtagAmount}
-              style={styles.picker}
-              enabled={!loading}
-            >
-              {HASHTAG_AMOUNTS.map(amount => (
-                <Picker.Item key={amount.value} label={amount.label} value={amount.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="ハッシュタグの量"
+            selectedValue={hashtagAmount}
+            onValueChange={setHashtagAmount}
+            options={HASHTAG_AMOUNTS}
+            disabled={loading}
+          />
         </View>
 
         {/* 言語設定 */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>言語</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={language}
-              onValueChange={setLanguage}
-              style={styles.picker}
-              enabled={!loading}
-            >
-              {LANGUAGES.map(lang => (
-                <Picker.Item key={lang.value} label={lang.label} value={lang.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="言語"
+            selectedValue={language}
+            onValueChange={setLanguage}
+            options={LANGUAGES}
+            disabled={loading}
+          />
         </View>
       </View>
 

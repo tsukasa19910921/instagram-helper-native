@@ -39,7 +39,8 @@
         {
           "photosPermission": "アプリが写真にアクセスして投稿を作成します"
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

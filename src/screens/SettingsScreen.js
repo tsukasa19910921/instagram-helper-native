@@ -9,11 +9,13 @@ import {
   Alert,
   TouchableOpacity
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import * as Haptics from 'expo-haptics';
 
 import { getSettings, saveSettings } from '../services/storage';
 import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
+
+// カスタムコンポーネント
+import { CustomPicker } from '../components/CustomPicker';
 
 const SettingsScreen = () => {
   // 設定状態
@@ -123,66 +125,42 @@ const SettingsScreen = () => {
 
         {/* 文章のトーン */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>文章のトーン</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={defaultTone}
-              onValueChange={(value) => handleChange(setDefaultTone, value)}
-              style={styles.picker}
-            >
-              {TEXT_TONES.map(tone => (
-                <Picker.Item key={tone.value} label={tone.label} value={tone.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="文章のトーン"
+            selectedValue={defaultTone}
+            onValueChange={(value) => handleChange(setDefaultTone, value)}
+            options={TEXT_TONES}
+          />
         </View>
 
         {/* 文章のスタイル */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>文章のスタイル</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={defaultStyle}
-              onValueChange={(value) => handleChange(setDefaultStyle, value)}
-              style={styles.picker}
-            >
-              {TEXT_STYLES.map(style => (
-                <Picker.Item key={style.value} label={style.label} value={style.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="文章のスタイル"
+            selectedValue={defaultStyle}
+            onValueChange={(value) => handleChange(setDefaultStyle, value)}
+            options={TEXT_STYLES}
+          />
         </View>
 
         {/* ハッシュタグの量 */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>ハッシュタグの量</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={defaultHashtagAmount}
-              onValueChange={(value) => handleChange(setDefaultHashtagAmount, value)}
-              style={styles.picker}
-            >
-              {HASHTAG_AMOUNTS.map(amount => (
-                <Picker.Item key={amount.value} label={amount.label} value={amount.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="ハッシュタグの量"
+            selectedValue={defaultHashtagAmount}
+            onValueChange={(value) => handleChange(setDefaultHashtagAmount, value)}
+            options={HASHTAG_AMOUNTS}
+          />
         </View>
 
         {/* 言語設定 */}
         <View style={styles.settingItem}>
-          <Text style={styles.label}>言語</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={defaultLanguage}
-              onValueChange={(value) => handleChange(setDefaultLanguage, value)}
-              style={styles.picker}
-            >
-              {LANGUAGES.map(lang => (
-                <Picker.Item key={lang.value} label={lang.label} value={lang.value} />
-              ))}
-            </Picker>
-          </View>
+          <CustomPicker
+            label="言語"
+            selectedValue={defaultLanguage}
+            onValueChange={(value) => handleChange(setDefaultLanguage, value)}
+            options={LANGUAGES}
+          />
         </View>
       </View>
 
