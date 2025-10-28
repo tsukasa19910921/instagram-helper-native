@@ -26,8 +26,16 @@ import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } fro
 
 // カスタムコンポーネント
 import { CustomPicker } from '../components/CustomPicker';
+import { InstagramHeader } from '../components/InstagramHeader';
+import { InstagramButton } from '../components/InstagramButton';
+import { InstagramCard } from '../components/InstagramCard';
+import { useThemeColors } from '../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
+  // テーマカラーの取得
+  const colors = useThemeColors();
+
   // 状態管理
   const [selectedImage, setSelectedImage] = useState(null);
   const [processedImage, setProcessedImage] = useState(null);
@@ -272,39 +280,39 @@ const HomeScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.contentContainer}>
       {/* ローディングオーバーレイ */}
       {loading && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>{loadingMessage}</Text>
         </View>
       )}
 
-      {/* ヘッダー */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Instagram投稿生成</Text>
-        <Text style={styles.subtitle}>AIが写真を解析して投稿文を作成</Text>
-      </View>
+      {/* Instagram風ヘッダー（スクロール可能） */}
+      <InstagramHeader />
 
-      {/* 画像選択エリア */}
-      <TouchableOpacity
-        style={styles.imageSelector}
-        onPress={selectImage}
-        activeOpacity={0.7}
-      >
-        {selectedImage ? (
-          <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
-        ) : (
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.placeholderIcon}>📷</Text>
-            <Text style={styles.placeholderText}>タップして写真を選択</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+        {/* 画像選択エリア */}
+        <InstagramCard>
+          <TouchableOpacity
+            style={styles.imageSelector}
+            onPress={selectImage}
+            activeOpacity={0.7}
+          >
+            {selectedImage ? (
+              <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <Text style={styles.placeholderIcon}>📷</Text>
+                <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>タップして写真を選択</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </InstagramCard>
 
-      {/* 設定フォーム */}
-      <View style={styles.form}>
+        {/* 設定フォーム */}
+        <InstagramCard>
+          <View style={styles.form}>
         {/* 必須キーワード */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>必須キーワード（オプション）</Text>
@@ -351,72 +359,73 @@ const HomeScreen = () => {
           />
         </View>
 
-        {/* 言語設定 */}
-        <View style={styles.inputGroup}>
-          <CustomPicker
-            label="言語"
-            selectedValue={language}
-            onValueChange={setLanguage}
-            options={LANGUAGES}
-            disabled={loading}
-          />
-        </View>
-      </View>
-
-      {/* 生成ボタン */}
-      <TouchableOpacity
-        style={[styles.button, styles.primaryButton, loading && styles.buttonDisabled]}
-        onPress={handleProcess}
-        disabled={loading || !selectedImage}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.buttonText}>
-          {loading ? '処理中...' : '投稿を生成'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* 結果表示エリア */}
-      {processedImage && generatedCaption && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultTitle}>生成結果</Text>
-
-          {/* 処理済み画像 */}
-          <Image source={{ uri: processedImage }} style={styles.resultImage} />
-
-          {/* 生成されたキャプション */}
-          <View style={styles.captionContainer}>
-            <Text style={styles.captionLabel}>投稿文</Text>
-            <Text style={styles.captionText}>{generatedCaption}</Text>
-
-            {/* アクションボタン */}
-            <View style={styles.actionButtons}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={copyToClipboard}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.actionButtonText}>コピー</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={saveToGallery}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.actionButtonText}>保存</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={shareContent}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.actionButtonText}>シェア</Text>
-              </TouchableOpacity>
+            {/* 言語設定 */}
+            <View style={styles.inputGroup}>
+              <CustomPicker
+                label="言語"
+                selectedValue={language}
+                onValueChange={setLanguage}
+                options={LANGUAGES}
+                disabled={loading}
+              />
             </View>
           </View>
+        </InstagramCard>
+
+        {/* 生成ボタン */}
+        <View style={styles.buttonContainer}>
+          <InstagramButton
+            title={loading ? '処理中...' : '投稿を生成'}
+            icon={<Ionicons name="sparkles" size={20} color="#fff" />}
+            onPress={handleProcess}
+            disabled={loading || !selectedImage}
+            accessibilityLabel="投稿を生成"
+            accessibilityHint="選択した画像からInstagram投稿文を生成します"
+          />
         </View>
-      )}
+
+        {/* 結果表示エリア */}
+        {processedImage && generatedCaption && (
+          <InstagramCard>
+            <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>生成結果</Text>
+
+            {/* 処理済み画像 */}
+            <Image source={{ uri: processedImage }} style={styles.resultImage} />
+
+            {/* 生成されたキャプション */}
+            <View style={styles.captionContainer}>
+              <Text style={[styles.captionLabel, { color: colors.textPrimary }]}>投稿文</Text>
+              <Text style={[styles.captionText, { color: colors.textPrimary }]}>{generatedCaption}</Text>
+
+              {/* アクションボタン */}
+              <View style={styles.actionButtons}>
+                <TouchableOpacity
+                  style={[styles.actionButton, { borderColor: colors.border }]}
+                  onPress={copyToClipboard}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>コピー</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.actionButton, { borderColor: colors.border }]}
+                  onPress={saveToGallery}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>保存</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.actionButton, { borderColor: colors.border }]}
+                  onPress={shareContent}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>シェア</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </InstagramCard>
+        )}
 
       {/* 下部の余白 */}
       <View style={styles.bottomSpacer} />
@@ -450,34 +459,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 20
   },
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e5ea'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1c1c1e',
-    marginBottom: 4
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#8e8e93'
-  },
   imageSelector: {
-    margin: 20,
     height: 300,
-    backgroundColor: '#fff',
     borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5
+    overflow: 'hidden'
   },
   selectedImage: {
     width: '100%',
@@ -528,39 +513,9 @@ const styles = StyleSheet.create({
   picker: {
     height: 50
   },
-  button: {
+  buttonContainer: {
     marginHorizontal: 20,
-    marginVertical: 10,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  primaryButton: {
-    backgroundColor: '#007AFF'
-  },
-  buttonDisabled: {
-    backgroundColor: '#c7c7cc'
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  resultContainer: {
-    margin: 20,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5
+    marginVertical: 10
   },
   resultTitle: {
     fontSize: 20,
