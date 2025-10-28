@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "instagram-helper-native",
-    "slug": "instagram-helper-native",
+    "name": "Instagram投稿ジェネレーター",
+    "slug": "instagram-post-generator",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,17 +13,33 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.instagramgenerator",
+      "infoPlist": {
+        "NSCameraUsageDescription": "写真を撮影して投稿を作成します",
+        "NSPhotoLibraryUsageDescription": "写真を選択して投稿を作成します",
+        "NSPhotoLibraryAddUsageDescription": "加工した写真を保存します"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.yourcompany.instagramgenerator",
       "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "アプリが写真にアクセスして投稿を作成します"
+        }
+      ]
+    ]
   }
 }
