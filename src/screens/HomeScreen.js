@@ -15,7 +15,6 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import * as Clipboard from 'expo-clipboard';
-import * as MediaLibrary from 'expo-media-library';
 import * as Haptics from 'expo-haptics';
 
 // サービスとユーティリティのインポート
@@ -244,45 +243,45 @@ const HomeScreen = () => {
   /**
    * 画像とキャプションをシェア
    * ⚠️ 元の高解像度画像を使用（低画質版は使わない）
+   * ✨ シェア時に投稿文を自動でクリップボードにコピー
+   * 📱 アラート表示 → OKボタン → シェアウィンドウの順序
    */
   const shareContent = async () => {
     try {
       const isAvailable = await Sharing.isAvailableAsync();
       if (isAvailable && selectedImage?.uri) {
-        await Sharing.shareAsync(selectedImage.uri, {
-          mimeType: 'image/jpeg',
-          dialogTitle: 'Instagram投稿をシェア'
-        });
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        // 投稿文を自動でコピー（Instagramに貼り付けるため）
+        await Clipboard.setStringAsync(generatedCaption);
+
+        // アラートを表示して、OKを押したらシェアウィンドウを開く
+        Alert.alert(
+          'シェア準備完了',
+          '投稿文をクリップボードにコピーしました',
+          [
+            {
+              text: 'OK',
+              onPress: async () => {
+                try {
+                  // OKを押したらシェアウィンドウを開く
+                  await Sharing.shareAsync(selectedImage.uri, {
+                    mimeType: 'image/jpeg',
+                    dialogTitle: 'Instagram投稿をシェア'
+                  });
+                  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                } catch (shareError) {
+                  console.error('シェアエラー:', shareError);
+                  Alert.alert('エラー', 'シェアに失敗しました');
+                }
+              }
+            }
+          ]
+        );
       } else {
         Alert.alert('エラー', 'シェア機能が利用できません');
       }
     } catch (error) {
-      console.error('シェアエラー:', error);
-      Alert.alert('エラー', 'シェアに失敗しました');
-    }
-  };
-
-  /**
-   * 画像を端末に保存
-   * ⚠️ 元の高解像度画像を使用（低画質版は使わない）
-   */
-  const saveToGallery = async () => {
-    try {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('エラー', '写真の保存には権限が必要です');
-        return;
-      }
-
-      if (selectedImage?.uri) {
-        await MediaLibrary.createAssetAsync(selectedImage.uri);
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        Alert.alert('保存完了', '画像をカメラロールに保存しました');
-      }
-    } catch (error) {
-      console.error('保存エラー:', error);
-      Alert.alert('エラー', '画像の保存に失敗しました');
+      console.error('コピーエラー:', error);
+      Alert.alert('エラー', 'コピーに失敗しました');
     }
   };
 
@@ -398,7 +397,6 @@ const HomeScreen = () => {
 
             {/* 生成されたキャプション */}
             <View style={styles.captionContainer}>
-              <Text style={[styles.captionLabel, { color: colors.textPrimary }]}>投稿文とハッシュタグ</Text>
               <Text style={[styles.captionText, { color: colors.textPrimary }]}>{generatedCaption}</Text>
 
               {/* アクションボタン */}
@@ -408,15 +406,7 @@ const HomeScreen = () => {
                   onPress={copyToClipboard}
                   activeOpacity={0.7}
                 >
-                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>コピー</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.actionButton, { borderColor: colors.border }]}
-                  onPress={saveToGallery}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>保存</Text>
+                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>生成結果をコピー</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -424,7 +414,7 @@ const HomeScreen = () => {
                   onPress={shareContent}
                   activeOpacity={0.7}
                 >
-                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>シェア</Text>
+                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>生成結果でシェア</Text>
                 </TouchableOpacity>
               </View>
             </View>
