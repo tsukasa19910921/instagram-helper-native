@@ -320,7 +320,7 @@ const HomeScreen = () => {
               <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
             ) : (
               <View style={styles.placeholderContainer}>
-                <Text style={styles.placeholderIcon}>📷</Text>
+                <Ionicons name="camera" size={60} color={colors.textSecondary} style={styles.placeholderIcon} />
                 <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>タップして写真を選択</Text>
               </View>
             )}
@@ -495,7 +495,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9'
   },
   placeholderIcon: {
-    fontSize: 60,
     marginBottom: 12
   },
   placeholderText: {
