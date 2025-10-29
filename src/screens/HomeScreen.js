@@ -227,6 +227,17 @@ const HomeScreen = () => {
   };
 
   /**
+   * 初期状態にリセット（別の画像でやりなおす）
+   */
+  const resetToInitialState = () => {
+    setSelectedImage(null);
+    setGeneratedCaption('');
+    setGeneratedText('');
+    setGeneratedHashtags('');
+    // 設定はそのまま保持
+  };
+
+  /**
    * キャプションをクリップボードにコピー
    */
   const copyToClipboard = async () => {
@@ -392,33 +403,47 @@ const HomeScreen = () => {
 
         {/* 結果表示エリア（投稿文とハッシュタグのみ表示） */}
         {generatedCaption && (
-          <InstagramCard>
-            <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>生成結果</Text>
+          <>
+            <InstagramCard>
+              <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>生成結果</Text>
 
-            {/* 生成されたキャプション */}
-            <View style={styles.captionContainer}>
-              <Text style={[styles.captionText, { color: colors.textPrimary }]}>{generatedCaption}</Text>
+              {/* 生成されたキャプション */}
+              <View style={styles.captionContainer}>
+                <Text style={[styles.captionText, { color: colors.textPrimary }]}>{generatedCaption}</Text>
 
-              {/* アクションボタン */}
-              <View style={styles.actionButtons}>
-                <TouchableOpacity
-                  style={[styles.actionButton, { borderColor: colors.border }]}
-                  onPress={copyToClipboard}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>生成結果をコピー</Text>
-                </TouchableOpacity>
+                {/* アクションボタン */}
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={copyToClipboard}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.actionButtonText}>生成結果をコピー</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.actionButton, { borderColor: colors.border }]}
-                  onPress={shareContent}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.actionButtonText, { color: colors.primary }]}>生成結果でシェア</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={shareContent}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.actionButtonText}>生成結果でシェア</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
+            </InstagramCard>
+
+            {/* 別の画像でやりなおすボタン */}
+            <View style={styles.buttonContainer}>
+              <InstagramButton
+                title="別の画像でやりなおす"
+                icon={<Ionicons name="refresh" size={20} color="#fff" />}
+                onPress={resetToInitialState}
+                disabled={loading}
+                accessibilityLabel="別の画像でやりなおす"
+                accessibilityHint="選択した画像と生成結果をクリアして最初からやり直します"
+              />
             </View>
-          </InstagramCard>
+          </>
         )}
 
       {/* 下部の余白 */}
@@ -547,16 +572,21 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14,
     marginHorizontal: 4,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    alignItems: 'center'
+    backgroundColor: '#E1306C', // Instagram ピンク
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#E1306C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4
   },
   actionButtonText: {
     color: '#fff',
-    fontWeight: '600',
-    fontSize: 14
+    fontWeight: 'bold',
+    fontSize: 15
   },
   bottomSpacer: {
     height: 40
