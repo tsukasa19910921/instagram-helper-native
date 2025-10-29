@@ -1,6 +1,7 @@
 // 画像処理ユーティリティ
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system/legacy';
+import { Image } from 'react-native';
 
 /**
  * 画像を圧縮してリサイズする
@@ -68,9 +69,14 @@ export const cropToSquare = async (imageUri) => {
   try {
     console.log('画像を正方形にトリミング中...');
 
-    // 画像情報を取得
-    const imageInfo = await ImageManipulator.manipulateAsync(imageUri, []);
-    const { width, height } = imageInfo;
+    // 画像の寸法を取得（Image.getSizeを使用して高速化）
+    const { width, height } = await new Promise((resolve, reject) => {
+      Image.getSize(
+        imageUri,
+        (width, height) => resolve({ width, height }),
+        (error) => reject(error)
+      );
+    });
 
     console.log('元の画像サイズ:', { width, height });
 

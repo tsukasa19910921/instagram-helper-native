@@ -1,6 +1,14 @@
 // 環境変数から読み込み（直接URLを書かないこと）
 import { API_BASE_URL as ENV_API_BASE_URL } from '@env';
 
+// 環境変数の検証
+if (!ENV_API_BASE_URL) {
+  throw new Error(
+    'API_BASE_URLが設定されていません。\n' +
+    '.envファイルにAPI_BASE_URLを設定してください。'
+  );
+}
+
 // 環境変数を定数としてエクスポート
 export const API_BASE_URL = ENV_API_BASE_URL;
 

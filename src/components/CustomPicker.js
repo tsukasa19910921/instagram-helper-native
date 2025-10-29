@@ -15,7 +15,9 @@ import {
   StyleSheet,
   Modal,
   ScrollView,
-  Platform
+  Platform,
+  AccessibilityInfo,
+  findNodeHandle
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -63,7 +65,10 @@ export const CustomPicker = memo(({
     setModalVisible(false);
     // モーダルを閉じたらフォーカスを戻す（アクセシビリティ）
     setTimeout(() => {
-      triggerRef.current?.focus?.();
+      const node = findNodeHandle(triggerRef.current);
+      if (node) {
+        AccessibilityInfo.setAccessibilityFocus(node);
+      }
     }, 100);
   };
 
@@ -114,7 +119,7 @@ export const CustomPicker = memo(({
         onRequestClose={closeModal}
         // アクセシビリティ対応（重要）
         accessible
-        accessibilityViewIsModal // モーダル外へのフォーカス移動を防ぐ
+        accessibilityViewIsModal // iOS: モーダル外へのフォーカス移動を防ぐ
       >
         <TouchableOpacity
           style={styles.modalOverlay}
@@ -127,6 +132,7 @@ export const CustomPicker = memo(({
             accessible
             accessibilityRole="menu"
             accessibilityLabel={`${label}の選択`}
+            importantForAccessibility="yes" // Android: モーダルにフォーカスを限定
           >
             {/* ヘッダー */}
             <View style={styles.modalHeader}>

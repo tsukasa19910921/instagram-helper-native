@@ -19,7 +19,7 @@ import * as Haptics from 'expo-haptics';
 
 // サービスとユーティリティのインポート
 import { processImage } from '../services/api';
-import { preprocessImage } from '../utils/imageUtils';
+import { preprocessImage, isImageSizeValid } from '../utils/imageUtils';
 import { saveSettings, getSettings } from '../services/storage';
 import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
 
@@ -195,6 +195,14 @@ const HomeScreen = () => {
       // ⚠️ この低画質版はGemini APIへの送信のみに使用（表示・保存には使わない）
       setLoadingMessage('画像を最適化中...');
       const processedImageData = await preprocessImage(selectedImage.uri, 1080, 0.8);
+
+      // 画像サイズの検証（4MB制限）
+      if (!isImageSizeValid(processedImageData.base64, 4)) {
+        throw new Error(
+          '画像サイズが大きすぎます。\n' +
+          '4MB以下の画像を選択するか、より小さい画像に変更してください。'
+        );
+      }
 
       // APIに送信（テキスト生成のみ、画像は返ってこない）
       setLoadingMessage('AIが文章を生成中...\nしばらくお待ちください');
