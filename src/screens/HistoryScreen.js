@@ -173,7 +173,7 @@ const HistoryScreen = () => {
         activeOpacity={0.7}
       >
         <View style={styles.itemHeader}>
-          <Image source={{ uri: item.processedImage }} style={styles.thumbnail} />
+          <Image source={{ uri: item.originalImageUri }} style={styles.thumbnail} />
           <View style={styles.itemInfo}>
             <Text style={styles.caption} numberOfLines={isExpanded ? undefined : 2}>
               {item.caption}
@@ -195,7 +195,7 @@ const HistoryScreen = () => {
 
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => shareImage(item.processedImage)}
+              onPress={() => shareImage(item.originalImageUri)}
               activeOpacity={0.7}
             >
               <Text style={styles.actionButtonText}>シェア</Text>

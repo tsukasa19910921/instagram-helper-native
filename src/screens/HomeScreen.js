@@ -37,9 +37,10 @@ const HomeScreen = () => {
   const colors = useThemeColors();
 
   // 状態管理
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [processedImage, setProcessedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // 元の高解像度画像（表示・シェア・保存に使用）
   const [generatedCaption, setGeneratedCaption] = useState('');
+  const [generatedText, setGeneratedText] = useState(''); // 投稿文のみ
+  const [generatedHashtags, setGeneratedHashtags] = useState(''); // ハッシュタグのみ
   const [requiredKeyword, setRequiredKeyword] = useState('');
   const [selectedTone, setSelectedTone] = useState('serious');
   const [selectedStyle, setSelectedStyle] = useState('neutral');
@@ -113,8 +114,9 @@ const HomeScreen = () => {
         });
 
         // 結果をクリア
-        setProcessedImage(null);
         setGeneratedCaption('');
+        setGeneratedText('');
+        setGeneratedHashtags('');
       }
     } catch (error) {
       console.error('カメラエラー:', error);
@@ -150,8 +152,9 @@ const HomeScreen = () => {
         });
 
         // 結果をクリア
-        setProcessedImage(null);
         setGeneratedCaption('');
+        setGeneratedText('');
+        setGeneratedHashtags('');
       }
     } catch (error) {
       console.error('ギャラリーエラー:', error);
@@ -173,10 +176,11 @@ const HomeScreen = () => {
 
     try {
       // 画像の前処理（正方形にトリミング + 圧縮）
+      // ⚠️ この低画質版はGemini APIへの送信のみに使用（表示・保存には使わない）
       setLoadingMessage('画像を最適化中...');
       const processedImageData = await preprocessImage(selectedImage.uri, 1080, 0.8);
 
-      // APIに送信
+      // APIに送信（テキスト生成のみ、画像は返ってこない）
       setLoadingMessage('AIが文章を生成中...\nしばらくお待ちください');
       const result = await processImage({
         image: processedImageData.base64,
@@ -189,12 +193,13 @@ const HomeScreen = () => {
       });
 
       // 結果を設定
-      setProcessedImage(result.processedImage);
       setGeneratedCaption(result.caption);
+      setGeneratedText(result.generatedText);
+      setGeneratedHashtags(result.hashtags);
 
-      // 履歴に保存
+      // 履歴に保存（元の高解像度画像のURIを保存）
       await saveToHistory({
-        processedImage: result.processedImage,
+        originalImageUri: selectedImage.uri, // 元の高解像度画像
         caption: result.caption,
         generatedText: result.generatedText,
         hashtags: result.hashtags,
@@ -210,7 +215,7 @@ const HomeScreen = () => {
 
       // 成功フィードバック
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert('完了', '画像の処理が完了しました！');
+      Alert.alert('完了', '投稿文の生成が完了しました！');
 
     } catch (error) {
       console.error('処理エラー:', error);
@@ -238,12 +243,13 @@ const HomeScreen = () => {
 
   /**
    * 画像とキャプションをシェア
+   * ⚠️ 元の高解像度画像を使用（低画質版は使わない）
    */
   const shareContent = async () => {
     try {
       const isAvailable = await Sharing.isAvailableAsync();
-      if (isAvailable && processedImage) {
-        await Sharing.shareAsync(processedImage, {
+      if (isAvailable && selectedImage?.uri) {
+        await Sharing.shareAsync(selectedImage.uri, {
           mimeType: 'image/jpeg',
           dialogTitle: 'Instagram投稿をシェア'
         });
@@ -259,6 +265,7 @@ const HomeScreen = () => {
 
   /**
    * 画像を端末に保存
+   * ⚠️ 元の高解像度画像を使用（低画質版は使わない）
    */
   const saveToGallery = async () => {
     try {
@@ -268,8 +275,8 @@ const HomeScreen = () => {
         return;
       }
 
-      if (processedImage) {
-        await MediaLibrary.createAssetAsync(processedImage);
+      if (selectedImage?.uri) {
+        await MediaLibrary.createAssetAsync(selectedImage.uri);
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         Alert.alert('保存完了', '画像をカメラロールに保存しました');
       }
@@ -384,17 +391,14 @@ const HomeScreen = () => {
           />
         </View>
 
-        {/* 結果表示エリア */}
-        {processedImage && generatedCaption && (
+        {/* 結果表示エリア（投稿文とハッシュタグのみ表示） */}
+        {generatedCaption && (
           <InstagramCard>
             <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>生成結果</Text>
 
-            {/* 処理済み画像 */}
-            <Image source={{ uri: processedImage }} style={styles.resultImage} />
-
             {/* 生成されたキャプション */}
             <View style={styles.captionContainer}>
-              <Text style={[styles.captionLabel, { color: colors.textPrimary }]}>投稿文</Text>
+              <Text style={[styles.captionLabel, { color: colors.textPrimary }]}>投稿文とハッシュタグ</Text>
               <Text style={[styles.captionText, { color: colors.textPrimary }]}>{generatedCaption}</Text>
 
               {/* アクションボタン */}

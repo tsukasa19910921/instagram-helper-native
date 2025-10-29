@@ -1,6 +1,5 @@
 // API通信サービス
 import axios from 'axios';
-import * as FileSystem from 'expo-file-system/legacy';
 import { API_BASE_URL } from '../constants';
 
 // axios設定（JSON形式で送信）
@@ -15,14 +14,14 @@ const api = axios.create({
 /**
  * 画像処理API呼び出し
  * @param {Object} params - リクエストパラメータ
- * @param {string} params.image - Base64エンコードされた画像データ
+ * @param {string} params.image - Base64エンコードされた画像データ（Gemini送信用の低画質版）
  * @param {string} params.requiredKeyword - 必須キーワード（オプション）
  * @param {string} params.tone - 文章のトーン
  * @param {string} params.style - 文章のスタイル
  * @param {string} params.hashtagAmount - ハッシュタグの量
  * @param {string} params.language - 言語設定
  * @param {string} params.imageStyle - 画像スタイル
- * @returns {Promise<Object>} 処理結果
+ * @returns {Promise<Object>} 処理結果（テキストのみ、画像は含まない）
  */
 export const processImage = async (params) => {
   try {
@@ -50,36 +49,26 @@ export const processImage = async (params) => {
 
     console.log('API応答受信:', {
       success: response.data.success,
-      hasProcessedImage: !!response.data.processedImage,
-      hasGeneratedText: !!response.data.generatedText
+      hasGeneratedText: !!response.data.generatedText,
+      hasHashtags: !!response.data.hashtags
     });
 
     // レスポンスの処理
     // WEBアプリAPIのレスポンス形式：
     // {
     //   success: true,
-    //   processedImage: "data:image/jpeg;base64,...",
+    //   processedImage: "data:image/jpeg;base64,...", ← 使用しない（表示・保存しない）
     //   generatedText: "投稿文章",
     //   hashtags: "#ハッシュタグ"
     // }
-    if (response.data.success && response.data.processedImage) {
-      // 処理済み画像を一時ファイルとして保存（シェア用）
-      const fileUri = FileSystem.documentDirectory + `processed_${Date.now()}.jpg`;
-
-      // data:image/jpeg;base64, プレフィックスを除去してBase64部分のみを取得
-      const base64Data = response.data.processedImage.replace(/^data:image\/\w+;base64,/, '');
-
-      await FileSystem.writeAsStringAsync(
-        fileUri,
-        base64Data,
-        { encoding: 'base64' }
-      );
-
+    if (response.data.success) {
       // キャプションを生成（文章とハッシュタグを結合）
       const caption = `${response.data.generatedText}\n\n${response.data.hashtags}`;
 
+      // ⚠️ 重要な変更点：
+      // - processedImage は返さない（画面表示・シェア・保存に使用しない）
+      // - 元の高解像度画像（selectedImage.uri）を使用するため、ここでは不要
       return {
-        processedImage: fileUri,
         caption: caption,
         generatedText: response.data.generatedText,
         hashtags: response.data.hashtags
