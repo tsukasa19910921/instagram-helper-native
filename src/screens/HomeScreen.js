@@ -20,7 +20,7 @@ import * as Haptics from 'expo-haptics';
 // サービスとユーティリティのインポート
 import { processImage } from '../services/api';
 import { preprocessImage } from '../utils/imageUtils';
-import { saveToHistory, getSettings } from '../services/storage';
+import { saveSettings, getSettings } from '../services/storage';
 import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
 
 // カスタムコンポーネント
@@ -67,6 +67,23 @@ const HomeScreen = () => {
       setImageStyle(settings.defaultImageStyle || 'original');
     } catch (error) {
       console.error('設定の読み込みに失敗:', error);
+    }
+  };
+
+  /**
+   * 設定を保存する（Picker変更時に即座に保存）
+   */
+  const updateAndSaveSettings = async (key, value) => {
+    try {
+      const currentSettings = await getSettings();
+      const newSettings = {
+        ...currentSettings,
+        [key]: value
+      };
+      await saveSettings(newSettings);
+      console.log(`設定を保存しました: ${key} = ${value}`);
+    } catch (error) {
+      console.error('設定の保存に失敗:', error);
     }
   };
 
@@ -195,22 +212,6 @@ const HomeScreen = () => {
       setGeneratedCaption(result.caption);
       setGeneratedText(result.generatedText);
       setGeneratedHashtags(result.hashtags);
-
-      // 履歴に保存（元の高解像度画像のURIを保存）
-      await saveToHistory({
-        originalImageUri: selectedImage.uri, // 元の高解像度画像
-        caption: result.caption,
-        generatedText: result.generatedText,
-        hashtags: result.hashtags,
-        settings: {
-          tone: selectedTone,
-          style: selectedStyle,
-          hashtagAmount,
-          language,
-          imageStyle,
-          requiredKeyword
-        }
-      });
 
       // 成功フィードバック
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -348,7 +349,10 @@ const HomeScreen = () => {
           <CustomPicker
             label="文章のトーン"
             selectedValue={selectedTone}
-            onValueChange={setSelectedTone}
+            onValueChange={(value) => {
+              setSelectedTone(value);
+              updateAndSaveSettings('defaultTone', value);
+            }}
             options={TEXT_TONES}
             disabled={loading}
           />
@@ -359,7 +363,10 @@ const HomeScreen = () => {
           <CustomPicker
             label="文章のスタイル"
             selectedValue={selectedStyle}
-            onValueChange={setSelectedStyle}
+            onValueChange={(value) => {
+              setSelectedStyle(value);
+              updateAndSaveSettings('defaultStyle', value);
+            }}
             options={TEXT_STYLES}
             disabled={loading}
           />
@@ -370,7 +377,10 @@ const HomeScreen = () => {
           <CustomPicker
             label="ハッシュタグの量"
             selectedValue={hashtagAmount}
-            onValueChange={setHashtagAmount}
+            onValueChange={(value) => {
+              setHashtagAmount(value);
+              updateAndSaveSettings('defaultHashtagAmount', value);
+            }}
             options={HASHTAG_AMOUNTS}
             disabled={loading}
           />
@@ -381,7 +391,10 @@ const HomeScreen = () => {
               <CustomPicker
                 label="言語"
                 selectedValue={language}
-                onValueChange={setLanguage}
+                onValueChange={(value) => {
+                  setLanguage(value);
+                  updateAndSaveSettings('defaultLanguage', value);
+                }}
                 options={LANGUAGES}
                 disabled={loading}
               />
