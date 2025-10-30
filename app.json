@@ -14,11 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.instagramgenerator",
+      "bundleIdentifier": "com.github.tsukasa19910921.instagramgenerator",
       "infoPlist": {
         "NSCameraUsageDescription": "写真を撮影して投稿を作成します",
         "NSPhotoLibraryUsageDescription": "写真を選択して投稿を作成します",
-        "NSPhotoLibraryAddUsageDescription": "加工した写真を保存します"
+        "NSPhotoLibraryAddUsageDescription": "加工した写真を保存します",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -26,9 +27,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yourcompany.instagramgenerator",
+      "package": "com.github.tsukasa19910921.instagramgenerator",
       "edgeToEdgeEnabled": true
     },
+    "runtimeVersion": "1.0.0",
     "plugins": [
       "expo-secure-store",
       [
@@ -38,6 +40,12 @@
         }
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4c766168-d7e6-42e2-9691-dae5690254b9"
+      }
+    },
+    "owner": "projectf"
   }
 }
