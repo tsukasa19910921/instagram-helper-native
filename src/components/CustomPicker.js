@@ -6,6 +6,7 @@
  * - アクセシビリティ強化（accessibilityViewIsModal、フォーカストラップ）
  * - フォーカス戻し機能を追加
  * - React.memoでパフォーマンス最適化
+ * - 多言語対応（i18n）
  */
 import React, { useState, useRef, memo } from 'react';
 import {
@@ -21,6 +22,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 
 export const CustomPicker = memo(({
   label,
@@ -30,11 +32,13 @@ export const CustomPicker = memo(({
   disabled = false,
   style = {}
 }) => {
+  const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const triggerRef = useRef(null); // トリガー要素への参照
 
-  // 選択された項目のラベルを取得
-  const selectedLabel = options.find(opt => opt.value === selectedValue)?.label || '';
+  // 選択された項目のラベルを取得（翻訳キー対応）
+  const selectedOption = options.find(opt => opt.value === selectedValue);
+  const selectedLabel = selectedOption ? t(selectedOption.label) : '';
 
   /**
    * 項目選択時の処理
@@ -94,9 +98,9 @@ export const CustomPicker = memo(({
         // アクセシビリティ対応
         accessible
         accessibilityRole="button"
-        accessibilityLabel={`${label}: ${selectedLabel}を選択`}
+        accessibilityLabel={`${label}: ${selectedLabel}`}
         accessibilityState={{ disabled }}
-        accessibilityHint="タップして選択肢を表示"
+        accessibilityHint={t('accessibility.tapToShowOptions')}
       >
         <Text style={[
           styles.selectedText,
@@ -145,7 +149,7 @@ export const CustomPicker = memo(({
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 accessible
                 accessibilityRole="button"
-                accessibilityLabel="閉じる"
+                accessibilityLabel={t('accessibility.close')}
               >
                 <Ionicons name="close" size={24} color="#1c1c1e" />
               </TouchableOpacity>
@@ -171,14 +175,14 @@ export const CustomPicker = memo(({
                     // アクセシビリティ対応
                     accessible
                     accessibilityRole="menuitem"
-                    accessibilityLabel={option.label}
+                    accessibilityLabel={t(option.label)}
                     accessibilityState={{ selected: isSelected }}
                   >
                     <Text style={[
                       styles.optionText,
                       isSelected && styles.optionTextSelected
                     ]}>
-                      {option.label}
+                      {t(option.label)}
                     </Text>
                     {isSelected && (
                       <Ionicons name="checkmark" size={24} color="#007AFF" />
@@ -191,13 +195,6 @@ export const CustomPicker = memo(({
         </TouchableOpacity>
       </Modal>
     </View>
-  );
-}, (prevProps, nextProps) => {
-  // カスタム比較関数（パフォーマンス最適化）
-  return (
-    prevProps.selectedValue === nextProps.selectedValue &&
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.options === nextProps.options
   );
 });
 

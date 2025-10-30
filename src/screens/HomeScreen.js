@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 
 // サービスとユーティリティのインポート
 import { processImage } from '../services/api';
@@ -28,10 +29,14 @@ import { CustomPicker } from '../components/CustomPicker';
 import { InstagramHeader } from '../components/InstagramHeader';
 import { InstagramButton } from '../components/InstagramButton';
 import { InstagramCard } from '../components/InstagramCard';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { useThemeColors } from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
+  // 多言語対応
+  const { t } = useTranslation();
+
   // テーマカラーの取得
   const colors = useThemeColors();
 
@@ -92,12 +97,12 @@ const HomeScreen = () => {
    */
   const selectImage = () => {
     Alert.alert(
-      '写真を選択',
-      '選択方法を選んでください',
+      t('imagePicker.selectPhoto'),
+      t('imagePicker.selectMethod'),
       [
-        { text: 'カメラで撮影', onPress: openCamera },
-        { text: 'ギャラリーから選択', onPress: openGallery },
-        { text: 'キャンセル', style: 'cancel' }
+        { text: t('imagePicker.takePhoto'), onPress: openCamera },
+        { text: t('imagePicker.chooseFromGallery'), onPress: openGallery },
+        { text: t('imagePicker.cancel'), style: 'cancel' }
       ]
     );
   };
@@ -110,7 +115,7 @@ const HomeScreen = () => {
       // カメラ権限の確認
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('エラー', 'カメラへのアクセス許可が必要です');
+        Alert.alert(t('alerts.error'), t('alerts.cameraPermission'));
         return;
       }
 
@@ -136,7 +141,7 @@ const HomeScreen = () => {
       }
     } catch (error) {
       console.error('カメラエラー:', error);
-      Alert.alert('エラー', 'カメラの起動に失敗しました');
+      Alert.alert(t('alerts.error'), t('alerts.cameraError'));
     }
   };
 
@@ -148,7 +153,7 @@ const HomeScreen = () => {
       // ギャラリー権限の確認
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('エラー', '写真へのアクセス許可が必要です');
+        Alert.alert(t('alerts.error'), t('alerts.galleryPermission'));
         return;
       }
 
@@ -174,7 +179,7 @@ const HomeScreen = () => {
       }
     } catch (error) {
       console.error('ギャラリーエラー:', error);
-      Alert.alert('エラー', '写真の選択に失敗しました');
+      Alert.alert(t('alerts.error'), t('alerts.galleryError'));
     }
   };
 
@@ -183,29 +188,26 @@ const HomeScreen = () => {
    */
   const handleProcess = async () => {
     if (!selectedImage) {
-      Alert.alert('エラー', '写真を選択してください');
+      Alert.alert(t('alerts.error'), t('alerts.selectImage'));
       return;
     }
 
     setLoading(true);
-    setLoadingMessage('画像を処理中...');
+    setLoadingMessage(t('loading.processing'));
 
     try {
       // 画像の前処理（正方形にトリミング + 圧縮）
       // ⚠️ この低画質版はGemini APIへの送信のみに使用（表示・保存には使わない）
-      setLoadingMessage('画像を最適化中...');
+      setLoadingMessage(t('loading.optimizing'));
       const processedImageData = await preprocessImage(selectedImage.uri, 1080, 0.8);
 
       // 画像サイズの検証（4MB制限）
       if (!isImageSizeValid(processedImageData.base64, 4)) {
-        throw new Error(
-          '画像サイズが大きすぎます。\n' +
-          '4MB以下の画像を選択するか、より小さい画像に変更してください。'
-        );
+        throw new Error(t('alerts.imageSizeError'));
       }
 
       // APIに送信（テキスト生成のみ、画像は返ってこない）
-      setLoadingMessage('AIが文章を生成中...\nしばらくお待ちください');
+      setLoadingMessage(t('loading.generating'));
       const result = await processImage({
         image: processedImageData.base64,
         requiredKeyword,
@@ -223,12 +225,12 @@ const HomeScreen = () => {
 
       // 成功フィードバック
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert('完了', '投稿文の生成が完了しました！');
+      Alert.alert(t('alerts.success'), t('alerts.generated'));
 
     } catch (error) {
       console.error('処理エラー:', error);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      Alert.alert('エラー', error.message || '処理中にエラーが発生しました');
+      Alert.alert(t('alerts.error'), error.message || t('alerts.processingError'));
     } finally {
       setLoading(false);
       setLoadingMessage('');
@@ -253,10 +255,10 @@ const HomeScreen = () => {
     try {
       await Clipboard.setStringAsync(generatedCaption);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert('コピー完了', '文章をクリップボードにコピーしました');
+      Alert.alert(t('alerts.success'), t('alerts.copied'));
     } catch (error) {
       console.error('コピーエラー:', error);
-      Alert.alert('エラー', 'コピーに失敗しました');
+      Alert.alert(t('alerts.error'), t('alerts.copyError'));
     }
   };
 
@@ -275,33 +277,33 @@ const HomeScreen = () => {
 
         // アラートを表示して、OKを押したらシェアウィンドウを開く
         Alert.alert(
-          'シェア準備完了',
-          '投稿文をクリップボードにコピーしました',
+          t('alerts.shareReady'),
+          t('alerts.shareMessage'),
           [
             {
-              text: 'OK',
+              text: t('alerts.ok'),
               onPress: async () => {
                 try {
                   // OKを押したらシェアウィンドウを開く
                   await Sharing.shareAsync(selectedImage.uri, {
                     mimeType: 'image/jpeg',
-                    dialogTitle: 'Instagram投稿をシェア'
+                    dialogTitle: t('header.title')
                   });
                   await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 } catch (shareError) {
                   console.error('シェアエラー:', shareError);
-                  Alert.alert('エラー', 'シェアに失敗しました');
+                  Alert.alert(t('alerts.error'), t('alerts.shareError'));
                 }
               }
             }
           ]
         );
       } else {
-        Alert.alert('エラー', 'シェア機能が利用できません');
+        Alert.alert(t('alerts.error'), t('alerts.shareUnavailable'));
       }
     } catch (error) {
       console.error('コピーエラー:', error);
-      Alert.alert('エラー', 'コピーに失敗しました');
+      Alert.alert(t('alerts.error'), t('alerts.copyError'));
     }
   };
 
@@ -318,6 +320,9 @@ const HomeScreen = () => {
       {/* Instagram風ヘッダー（スクロール可能） */}
       <InstagramHeader />
 
+      {/* 言語切り替えコンポーネント */}
+      <LanguageSwitcher />
+
         {/* 画像選択エリア */}
         <InstagramCard>
           <TouchableOpacity
@@ -330,7 +335,7 @@ const HomeScreen = () => {
             ) : (
               <View style={styles.placeholderContainer}>
                 <Ionicons name="camera" size={60} color={colors.textSecondary} style={styles.placeholderIcon} />
-                <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>タップして写真を選択</Text>
+                <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>{t('imagePicker.placeholder')}</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -341,10 +346,10 @@ const HomeScreen = () => {
           <View style={styles.form}>
         {/* 必須キーワード */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>必須キーワード（オプション）</Text>
+          <Text style={styles.label}>{t('form.requiredKeyword')}</Text>
           <TextInput
             style={styles.textInput}
-            placeholder="例: 東京"
+            placeholder={t('form.requiredKeywordPlaceholder')}
             value={requiredKeyword}
             onChangeText={setRequiredKeyword}
             maxLength={20}
@@ -355,7 +360,7 @@ const HomeScreen = () => {
         {/* 文章のトーン */}
         <View style={styles.inputGroup}>
           <CustomPicker
-            label="文章のトーン"
+            label={t('form.tone')}
             selectedValue={selectedTone}
             onValueChange={(value) => {
               setSelectedTone(value);
@@ -369,7 +374,7 @@ const HomeScreen = () => {
         {/* 文章のスタイル */}
         <View style={styles.inputGroup}>
           <CustomPicker
-            label="文章のスタイル"
+            label={t('form.style')}
             selectedValue={selectedStyle}
             onValueChange={(value) => {
               setSelectedStyle(value);
@@ -383,7 +388,7 @@ const HomeScreen = () => {
         {/* ハッシュタグの量 */}
         <View style={styles.inputGroup}>
           <CustomPicker
-            label="ハッシュタグの量"
+            label={t('form.hashtagAmount')}
             selectedValue={hashtagAmount}
             onValueChange={(value) => {
               setHashtagAmount(value);
@@ -394,10 +399,10 @@ const HomeScreen = () => {
           />
         </View>
 
-            {/* 言語設定 */}
+            {/* 言語設定（API生成言語用 - UIロケールとは独立） */}
             <View style={styles.inputGroup}>
               <CustomPicker
-                label="言語"
+                label={t('form.language')}
                 selectedValue={language}
                 onValueChange={(value) => {
                   setLanguage(value);
@@ -413,12 +418,12 @@ const HomeScreen = () => {
         {/* 生成ボタン */}
         <View style={styles.buttonContainer}>
           <InstagramButton
-            title={loading ? '処理中...' : '投稿を生成'}
+            title={loading ? t('buttons.generating') : t('buttons.generate')}
             icon={<Ionicons name="sparkles" size={20} color="#fff" />}
             onPress={handleProcess}
             disabled={loading || !selectedImage}
-            accessibilityLabel="投稿を生成"
-            accessibilityHint="選択した画像からInstagram投稿文を生成します"
+            accessibilityLabel={t('accessibility.generate')}
+            accessibilityHint={t('accessibility.generateHint')}
           />
         </View>
 
@@ -426,7 +431,7 @@ const HomeScreen = () => {
         {generatedCaption && (
           <>
             <InstagramCard>
-              <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>生成結果</Text>
+              <Text style={[styles.resultTitle, { color: colors.textPrimary }]}>{t('results.title')}</Text>
 
               {/* 生成されたキャプション */}
               <View style={styles.captionContainer}>
@@ -439,7 +444,7 @@ const HomeScreen = () => {
                     onPress={copyToClipboard}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.actionButtonText}>生成結果をコピー</Text>
+                    <Text style={styles.actionButtonText}>{t('buttons.copy')}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -447,7 +452,7 @@ const HomeScreen = () => {
                     onPress={shareContent}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.actionButtonText}>生成結果でシェア</Text>
+                    <Text style={styles.actionButtonText}>{t('buttons.share')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -456,12 +461,12 @@ const HomeScreen = () => {
             {/* 別の画像でやりなおすボタン */}
             <View style={styles.buttonContainer}>
               <InstagramButton
-                title="別の画像でやりなおす"
+                title={t('buttons.retry')}
                 icon={<Ionicons name="refresh" size={20} color="#fff" />}
                 onPress={resetToInitialState}
                 disabled={loading}
-                accessibilityLabel="別の画像でやりなおす"
-                accessibilityHint="選択した画像と生成結果をクリアして最初からやり直します"
+                accessibilityLabel={t('accessibility.retry')}
+                accessibilityHint={t('accessibility.retryHint')}
               />
             </View>
           </>

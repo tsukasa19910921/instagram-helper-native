@@ -56,13 +56,6 @@ export const InstagramButton = memo(({
       </View>
     </TouchableOpacity>
   );
-}, (prevProps, nextProps) => {
-  // カスタム比較関数（パフォーマンス最適化）
-  return (
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.title === nextProps.title &&
-    prevProps.icon === nextProps.icon
-  );
 });
 
 InstagramButton.displayName = 'InstagramButton';

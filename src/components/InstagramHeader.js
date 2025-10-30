@@ -6,16 +6,19 @@
  * - Instagramロゴを避けてカメラアイコンに変更（ブランドガイドライン対応）
  * - React.memoでパフォーマンス最適化
  * - ダークモード対応
+ * - 多言語対応（i18n）
  */
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '../constants/colors';
 
 export const InstagramHeader = memo(() => {
   const colors = useThemeColors();
+  const { t } = useTranslation();
 
   return (
     <LinearGradient
@@ -30,9 +33,9 @@ export const InstagramHeader = memo(() => {
       <View style={styles.headerContent}>
         {/* Instagramロゴではなくカメラアイコンを使用（ブランドガイドライン対応） */}
         <Ionicons name="camera" size={48} color="#fff" />
-        <Text style={styles.headerTitle}>Instagram Helper</Text>
+        <Text style={styles.headerTitle}>{t('header.title')}</Text>
         <Text style={styles.headerSubtitle}>
-          投稿を効率化するAIアシスタント
+          {t('header.subtitle')}
         </Text>
       </View>
     </LinearGradient>

@@ -1,0 +1,95 @@
+{
+  "header": {
+    "title": "Instagram Helper",
+    "subtitle": "AI Assistant for Efficient Posting"
+  },
+  "imagePicker": {
+    "selectPhoto": "Select Photo",
+    "selectMethod": "Choose selection method",
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery",
+    "cancel": "Cancel",
+    "tapToSelect": "Tap to select photo",
+    "placeholder": "Tap to select photo"
+  },
+  "form": {
+    "requiredKeyword": "Required Keyword (Optional)",
+    "requiredKeywordPlaceholder": "e.g., Tokyo",
+    "tone": "Text Tone",
+    "style": "Text Style",
+    "hashtagAmount": "Hashtag Amount",
+    "language": "Language",
+    "uiLanguage": "UI Language"
+  },
+  "buttons": {
+    "generate": "Generate Post",
+    "generating": "Processing...",
+    "retry": "Try Another Image",
+    "copy": "Copy Result",
+    "share": "Share Result"
+  },
+  "results": {
+    "title": "Generated Result"
+  },
+  "loading": {
+    "processing": "Processing image...",
+    "optimizing": "Optimizing image...",
+    "generating": "AI is generating text...\nPlease wait"
+  },
+  "alerts": {
+    "error": "Error",
+    "success": "Success",
+    "cameraPermission": "Camera access permission required",
+    "galleryPermission": "Photo access permission required",
+    "cameraError": "Failed to launch camera",
+    "galleryError": "Failed to select photo",
+    "selectImage": "Please select a photo",
+    "generated": "Post caption generated successfully!",
+    "copied": "Caption copied to clipboard",
+    "copyError": "Failed to copy",
+    "shareReady": "Share Ready",
+    "shareMessage": "Caption copied to clipboard",
+    "shareError": "Failed to share",
+    "shareUnavailable": "Share feature unavailable",
+    "imageSizeError": "Image size too large.\nPlease select an image under 4MB or use a smaller image.",
+    "processingError": "An error occurred during processing",
+    "ok": "OK"
+  },
+  "tones": {
+    "serious": "Serious",
+    "humorous": "Humorous",
+    "sparkling": "Sparkling",
+    "passionate": "Passionate",
+    "casual": "Casual",
+    "elegant": "Elegant"
+  },
+  "styles": {
+    "masculine": "Masculine",
+    "feminine": "Feminine",
+    "neutral": "Neutral"
+  },
+  "hashtags": {
+    "many": "Many",
+    "normal": "Normal",
+    "few": "Few"
+  },
+  "languages": {
+    "japanese": "Japanese",
+    "english": "English",
+    "bilingual": "Japanese & English"
+  },
+  "imageStyles": {
+    "original": "Original",
+    "anime": "Anime Style",
+    "vintage": "Vintage",
+    "sparkle": "Sparkling"
+  },
+  "accessibility": {
+    "generate": "Generate post",
+    "generateHint": "Generate Instagram post caption from selected image",
+    "retry": "Try another image",
+    "retryHint": "Clear selected image and generated result to start over",
+    "close": "Close",
+    "tapToShowOptions": "Tap to show options"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "header": {
+    "title": "Instagram Helper",
+    "subtitle": "投稿を効率化するAIアシスタント"
+  },
+  "imagePicker": {
+    "selectPhoto": "写真を選択",
+    "selectMethod": "選択方法を選んでください",
+    "takePhoto": "カメラで撮影",
+    "chooseFromGallery": "ギャラリーから選択",
+    "cancel": "キャンセル",
+    "tapToSelect": "タップして写真を選択",
+    "placeholder": "タップして写真を選択"
+  },
+  "form": {
+    "requiredKeyword": "必須キーワード（オプション）",
+    "requiredKeywordPlaceholder": "例: 東京",
+    "tone": "文章のトーン",
+    "style": "文章のスタイル",
+    "hashtagAmount": "ハッシュタグの量",
+    "language": "言語",
+    "uiLanguage": "UI言語"
+  },
+  "buttons": {
+    "generate": "投稿を生成",
+    "generating": "処理中...",
+    "retry": "別の画像でやりなおす",
+    "copy": "生成結果をコピー",
+    "share": "生成結果でシェア"
+  },
+  "results": {
+    "title": "生成結果"
+  },
+  "loading": {
+    "processing": "画像を処理中...",
+    "optimizing": "画像を最適化中...",
+    "generating": "AIが文章を生成中...\nしばらくお待ちください"
+  },
+  "alerts": {
+    "error": "エラー",
+    "success": "完了",
+    "cameraPermission": "カメラへのアクセス許可が必要です",
+    "galleryPermission": "写真へのアクセス許可が必要です",
+    "cameraError": "カメラの起動に失敗しました",
+    "galleryError": "写真の選択に失敗しました",
+    "selectImage": "写真を選択してください",
+    "generated": "投稿文の生成が完了しました！",
+    "copied": "文章をクリップボードにコピーしました",
+    "copyError": "コピーに失敗しました",
+    "shareReady": "シェア準備完了",
+    "shareMessage": "投稿文をクリップボードにコピーしました",
+    "shareError": "シェアに失敗しました",
+    "shareUnavailable": "シェア機能が利用できません",
+    "imageSizeError": "画像サイズが大きすぎます。\n4MB以下の画像を選択するか、より小さい画像に変更してください。",
+    "processingError": "処理中にエラーが発生しました",
+    "ok": "OK"
+  },
+  "tones": {
+    "serious": "まじめ",
+    "humorous": "ユーモア",
+    "sparkling": "キラキラ",
+    "passionate": "情熱的",
+    "casual": "カジュアル",
+    "elegant": "エレガント"
+  },
+  "styles": {
+    "masculine": "男性的",
+    "feminine": "女性的",
+    "neutral": "中性的"
+  },
+  "hashtags": {
+    "many": "多い",
+    "normal": "普通",
+    "few": "少ない"
+  },
+  "languages": {
+    "japanese": "日本語",
+    "english": "英語",
+    "bilingual": "日英併記"
+  },
+  "imageStyles": {
+    "original": "そのまま",
+    "anime": "アニメ風",
+    "vintage": "ビンテージ",
+    "sparkle": "キラキラ"
+  },
+  "accessibility": {
+    "generate": "投稿を生成",
+    "generateHint": "選択した画像からInstagram投稿文を生成します",
+    "retry": "別の画像でやりなおす",
+    "retryHint": "選択した画像と生成結果をクリアして最初からやり直します",
+    "close": "閉じる",
+    "tapToShowOptions": "タップして選択肢を表示"
+  }
+}
