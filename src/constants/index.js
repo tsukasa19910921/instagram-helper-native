@@ -1,16 +1,21 @@
 // 環境変数から読み込み（直接URLを書かないこと）
 import { API_BASE_URL as ENV_API_BASE_URL } from '@env';
 
-// 環境変数の検証
+// デフォルトのAPI URL（本番環境用）
+const DEFAULT_API_BASE_URL = 'https://instagram-helper.vercel.app/api';
+
+// 環境変数の検証とフォールバック
+// .envが存在しない環境（TestFlight等）でもアプリが起動するように、
+// デフォルト値でフェイルソフトします
 if (!ENV_API_BASE_URL) {
-  throw new Error(
-    'API_BASE_URLが設定されていません。\n' +
-    '.envファイルにAPI_BASE_URLを設定してください。'
+  console.warn(
+    '⚠️ API_BASE_URLが.envから読み込めませんでした。\n' +
+    `デフォルト値を使用します: ${DEFAULT_API_BASE_URL}`
   );
 }
 
-// 環境変数を定数としてエクスポート
-export const API_BASE_URL = ENV_API_BASE_URL;
+// 環境変数を定数としてエクスポート（無い場合はデフォルト値）
+export const API_BASE_URL = ENV_API_BASE_URL || DEFAULT_API_BASE_URL;
 
 // 画像スタイルの選択肢
 // 注: labelは翻訳キー、valueは英語スラッグ（API連携用）

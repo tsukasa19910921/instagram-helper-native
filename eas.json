@@ -9,6 +9,9 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "medium"
+      },
+      "env": {
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
       }
     },
     "preview": {
@@ -18,6 +21,9 @@
       },
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
       }
     },
     "production": {
@@ -27,6 +33,9 @@
       },
       "android": {
         "autoIncrement": true
+      },
+      "env": {
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
       }
     }
   }
