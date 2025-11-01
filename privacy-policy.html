@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プライバシーポリシー - Instagram投稿ジェネレーター | Privacy Policy - Instagram Post Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #f5f5f7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .language-toggle {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .language-toggle button {
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .language-toggle button:hover {
+            background-color: #0051D5;
+        }
+
+        .language-toggle button.active {
+            background-color: #0051D5;
+        }
+
+        .language-section {
+            display: none;
+        }
+
+        .language-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #1d1d1f;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #1d1d1f;
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #1d1d1f;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .contact {
+            background-color: #f5f5f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .important-notice {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        a {
+            color: #007AFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-toggle">
+            <button onclick="showLanguage('ja')" id="btn-ja" class="active">日本語</button>
+            <button onclick="showLanguage('en')" id="btn-en">English</button>
+        </div>
+
+        <!-- 日本語版 -->
+        <div id="ja" class="language-section active">
+            <h1>プライバシーポリシー</h1>
+            <p class="date">最終更新日: 2025年11月01日</p>
+
+            <h2>収集する情報</h2>
+            <p>本アプリは以下の情報を収集します：</p>
+            <ul>
+                <li>ユーザーが選択した写真（AI処理のために使用）</li>
+            </ul>
+
+            <h2>情報の使用方法</h2>
+            <p>収集した情報は以下の目的で使用されます：</p>
+            <ul>
+                <li>AIによるキャプション生成サービスの提供</li>
+            </ul>
+
+            <h2>第三者サービスへのデータ送信</h2>
+            <p>本アプリは、キャプション生成機能を提供するために、以下の第三者サービスにデータを送信します：</p>
+
+            <h3>Google Gemini API</h3>
+            <ul>
+                <li>ユーザーが選択した写真は、AIによるキャプション生成のためにGoogle Gemini APIに送信されます</li>
+                <li>送信されたデータはキャプション生成の処理にのみ使用されます</li>
+                <li>送信された写真データは、処理完了後、Googleのポリシーに従って取り扱われます</li>
+                <li>Googleのプライバシーポリシー：<a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></li>
+            </ul>
+
+            <div class="important-notice">
+                <strong>重要：</strong> 本アプリを使用することで、上記のデータ送信に同意したものとみなされます。
+            </div>
+
+            <h2>データの保存</h2>
+            <ul>
+                <li>生成されたキャプションはデバイスのローカルストレージに保存されます</li>
+                <li>当社のサーバーにはいかなるデータも保存されません</li>
+            </ul>
+
+            <h2>データの削除</h2>
+            <p>アプリをアンインストールすることで、デバイスに保存されたすべてのデータが削除されます。</p>
+
+            <h2>お問い合わせ</h2>
+            <div class="contact">
+                <p>プライバシーポリシーに関するご質問は、以下までお問い合わせください：</p>
+                <p><a href="mailto:togikai.project.f@gmail.com">togikai.project.f@gmail.com</a></p>
+            </div>
+        </div>
+
+        <!-- 英語版 -->
+        <div id="en" class="language-section">
+            <h1>Privacy Policy</h1>
+            <p class="date">Last updated: November 1, 2025</p>
+
+            <h2>Information We Collect</h2>
+            <p>This app collects the following information:</p>
+            <ul>
+                <li>Photos selected by users (used for AI processing)</li>
+            </ul>
+
+            <h2>How We Use Information</h2>
+            <p>The collected information is used for:</p>
+            <ul>
+                <li>Providing AI-powered caption generation services</li>
+            </ul>
+
+            <h2>Third-Party Service Data Transmission</h2>
+            <p>To provide caption generation features, this app transmits data to the following third-party service:</p>
+
+            <h3>Google Gemini API</h3>
+            <ul>
+                <li>Photos selected by users are sent to Google Gemini API for AI-powered caption generation</li>
+                <li>The transmitted data is used solely for caption generation processing</li>
+                <li>Photo data transmitted is handled according to Google's policies after processing completion</li>
+                <li>Google Privacy Policy: <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></li>
+            </ul>
+
+            <div class="important-notice">
+                <strong>Important:</strong> By using this app, you consent to the data transmission described above.
+            </div>
+
+            <h2>Data Storage</h2>
+            <ul>
+                <li>Generated captions are stored in device local storage</li>
+                <li>We do not store any data on our servers</li>
+            </ul>
+
+            <h2>Data Deletion</h2>
+            <p>Uninstalling the app will delete all data stored on your device.</p>
+
+            <h2>Contact Us</h2>
+            <div class="contact">
+                <p>If you have questions about this Privacy Policy, please contact us at:</p>
+                <p><a href="mailto:togikai.project.f@gmail.com">togikai.project.f@gmail.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLanguage(lang) {
+            // すべての言語セクションを非表示
+            document.querySelectorAll('.language-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // すべてのボタンから active クラスを削除
+            document.querySelectorAll('.language-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 選択された言語のセクションを表示
+            document.getElementById(lang).classList.add('active');
+            document.getElementById('btn-' + lang).classList.add('active');
+        }
+    </script>
+</body>
+</html>
