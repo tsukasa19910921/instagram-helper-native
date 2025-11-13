@@ -7,6 +7,8 @@ module.exports = function(api) {
       ['module:react-native-dotenv', {
         moduleName: '@env',
         path: '.env',
+        safe: false,
+        allowUndefined: true
       }],
       // 🚨 重要: react-native-reanimated/pluginは必ず最後に配置すること
       'react-native-reanimated/plugin'

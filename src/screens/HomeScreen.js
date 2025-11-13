@@ -23,6 +23,8 @@ import { processImage } from '../services/api';
 import { preprocessImage, isImageSizeValid } from '../utils/imageUtils';
 import { saveSettings, getSettings } from '../services/storage';
 import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
+// 広告マネージャーのインポート
+import { showInterstitialAd, preloadAd } from '../services/adManager';
 
 // カスタムコンポーネント
 import { CustomPicker } from '../components/CustomPicker';
@@ -57,6 +59,8 @@ const HomeScreen = () => {
   // 初期設定の読み込み
   useEffect(() => {
     loadInitialSettings();
+    // 広告を事前にロード
+    preloadAd();
   }, []);
 
   /**
@@ -185,6 +189,7 @@ const HomeScreen = () => {
 
   /**
    * 画像を処理してキャプションを生成
+   * 改良版: AI処理 → 広告表示 → 結果表示
    */
   const handleProcess = async () => {
     if (!selectedImage) {
@@ -193,12 +198,12 @@ const HomeScreen = () => {
     }
 
     setLoading(true);
-    setLoadingMessage(t('loading.processing'));
+    // ⭐ ローディングメッセージで広告表示を予告
+    setLoadingMessage(t('loading.generatingWithAd'));
 
     try {
-      // 画像の前処理（正方形にトリミング + 圧縮）
+      // ⭐ ステップ1: 画像の前処理（正方形にトリミング + 圧縮）
       // ⚠️ この低画質版はGemini APIへの送信のみに使用（表示・保存には使わない）
-      setLoadingMessage(t('loading.optimizing'));
       const processedImageData = await preprocessImage(selectedImage.uri, 1080, 0.8);
 
       // 画像サイズの検証（4MB制限）
@@ -206,8 +211,7 @@ const HomeScreen = () => {
         throw new Error(t('alerts.imageSizeError'));
       }
 
-      // APIに送信（テキスト生成のみ、画像は返ってこない）
-      setLoadingMessage(t('loading.generating'));
+      // ⭐ ステップ2: APIに送信（テキスト生成のみ、画像は返ってこない）
       const result = await processImage({
         image: processedImageData.base64,
         requiredKeyword,
@@ -218,12 +222,25 @@ const HomeScreen = () => {
         imageStyle
       });
 
-      // 結果を設定
+      // ⭐ ステップ3: AI処理が完了したら、ローディングを一旦終了
+      setLoading(false);
+      setLoadingMessage('');
+
+      // ⭐ ステップ4: 広告を表示
+      try {
+        await showInterstitialAd();
+        console.log('広告の表示が完了しました');
+      } catch (adError) {
+        // 広告表示に失敗しても処理は続行
+        console.warn('広告表示エラー（処理は続行）:', adError);
+      }
+
+      // ⭐ ステップ5: 結果を設定
       setGeneratedCaption(result.caption);
       setGeneratedText(result.generatedText);
       setGeneratedHashtags(result.hashtags);
 
-      // 成功フィードバック
+      // ⭐ ステップ6: 成功フィードバック
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert(t('alerts.success'), t('alerts.generated'));
 

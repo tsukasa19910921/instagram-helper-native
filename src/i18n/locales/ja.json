@@ -34,7 +34,8 @@
   "loading": {
     "processing": "画像を処理中...",
     "optimizing": "画像を最適化中...",
-    "generating": "AIが文章を生成中...\nしばらくお待ちください"
+    "generating": "AIが文章を生成中...\nしばらくお待ちください",
+    "generatingWithAd": "AIが文章を生成中\n広告表示の後に結果が表示されます"
   },
   "alerts": {
     "error": "エラー",

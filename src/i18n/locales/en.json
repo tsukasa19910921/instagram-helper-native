@@ -34,7 +34,8 @@
   "loading": {
     "processing": "Processing image...",
     "optimizing": "Optimizing image...",
-    "generating": "AI is generating text...\nPlease wait"
+    "generating": "AI is generating text...\nPlease wait",
+    "generatingWithAd": "AI is generating text\nResults will be displayed after the ad"
   },
   "alerts": {
     "error": "Error",

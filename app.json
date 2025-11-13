@@ -20,6 +20,9 @@
         "NSPhotoLibraryUsageDescription": "写真を選択して投稿を作成します",
         "NSPhotoLibraryAddUsageDescription": "加工した写真を保存します",
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-8360796559713542~4169918139"
       }
     },
     "android": {
@@ -39,7 +42,14 @@
           "photosPermission": "アプリが写真にアクセスして投稿を作成します"
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-8360796559713542~4169918139"
+        }
+      ]
     ],
     "extra": {
       "eas": {
