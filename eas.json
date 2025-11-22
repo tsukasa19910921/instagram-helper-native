@@ -11,7 +11,11 @@
         "resourceClass": "medium"
       },
       "env": {
-        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api",
+        "ADMOB_IOS_INTERSTITIAL_ID": "ca-app-pub-8360796559713542/5789696537",
+        "ADMOB_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712",
+        "ADMOB_TEST_IOS_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/4411468910",
+        "ADMOB_TEST_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712"
       }
     },
     "preview": {
@@ -23,7 +27,11 @@
         "buildType": "apk"
       },
       "env": {
-        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api",
+        "ADMOB_IOS_INTERSTITIAL_ID": "ca-app-pub-8360796559713542/5789696537",
+        "ADMOB_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712",
+        "ADMOB_TEST_IOS_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/4411468910",
+        "ADMOB_TEST_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712"
       }
     },
     "production": {
@@ -35,7 +43,20 @@
         "autoIncrement": true
       },
       "env": {
-        "API_BASE_URL": "https://instagram-helper.vercel.app/api"
+        "API_BASE_URL": "https://instagram-helper.vercel.app/api",
+        "ADMOB_IOS_INTERSTITIAL_ID": "ca-app-pub-8360796559713542/5789696537",
+        "ADMOB_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712",
+        "ADMOB_TEST_IOS_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/4411468910",
+        "ADMOB_TEST_ANDROID_INTERSTITIAL_ID": "ca-app-pub-3940256099942544/1033173712"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "kosuke.akatsuka@gmail.com",
+        "ascAppId": "6738640869",
+        "appleTeamId": "P35JCLUKRT"
       }
     }
   }
