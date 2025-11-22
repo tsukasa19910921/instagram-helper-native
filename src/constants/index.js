@@ -45,13 +45,11 @@ export const TEXT_STYLES = [
   { label: 'styles.neutral', value: 'neutral' }
 ];
 
-// ハッシュタグの量
-// 注: labelは翻訳キー、valueは英語スラッグ（API連携用）
-export const HASHTAG_AMOUNTS = [
-  { label: 'hashtags.many', value: 'many' },
-  { label: 'hashtags.normal', value: 'normal' },
-  { label: 'hashtags.few', value: 'few' }
-];
+// ハッシュタグ数の設定
+// Instagram仕様変更により、選択型から数値入力型に変更
+export const HASHTAG_COUNT_DEFAULT = 3; // デフォルト値
+export const HASHTAG_COUNT_MIN = 1; // 最小値
+export const HASHTAG_COUNT_MAX = 30; // 最大値
 
 // 言語設定（API生成言語用 - UIロケールとは独立）
 // 注: labelは翻訳キー、valueは英語スラッグ（API連携用）

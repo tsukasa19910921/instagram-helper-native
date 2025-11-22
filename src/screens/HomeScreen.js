@@ -22,8 +22,10 @@ import { useTranslation } from 'react-i18next';
 import { processImage } from '../services/api';
 import { preprocessImage, isImageSizeValid } from '../utils/imageUtils';
 import { saveSettings, getSettings } from '../services/storage';
-import { TEXT_TONES, TEXT_STYLES, HASHTAG_AMOUNTS, LANGUAGES, IMAGE_STYLES } from '../constants';
+import { TEXT_TONES, TEXT_STYLES, LANGUAGES, IMAGE_STYLES, HASHTAG_COUNT_DEFAULT, HASHTAG_COUNT_MIN, HASHTAG_COUNT_MAX } from '../constants';
+
 // 広告マネージャーのインポート
+// 本番ビルド用: 広告機能を有効化
 import { showInterstitialAd, preloadAd } from '../services/adManager';
 
 // カスタムコンポーネント
@@ -50,7 +52,7 @@ const HomeScreen = () => {
   const [requiredKeyword, setRequiredKeyword] = useState('');
   const [selectedTone, setSelectedTone] = useState('serious');
   const [selectedStyle, setSelectedStyle] = useState('neutral');
-  const [hashtagAmount, setHashtagAmount] = useState('normal');
+  const [hashtagCount, setHashtagCount] = useState(HASHTAG_COUNT_DEFAULT); // 数値型に変更
   const [language, setLanguage] = useState('japanese');
   const [imageStyle, setImageStyle] = useState('original');
   const [loading, setLoading] = useState(false);
@@ -71,7 +73,7 @@ const HomeScreen = () => {
       const settings = await getSettings();
       setSelectedTone(settings.defaultTone || 'serious');
       setSelectedStyle(settings.defaultStyle || 'neutral');
-      setHashtagAmount(settings.defaultHashtagAmount || 'normal');
+      setHashtagCount(settings.defaultHashtagCount || HASHTAG_COUNT_DEFAULT); // 数値型に変更
       setLanguage(settings.defaultLanguage || 'japanese');
       setImageStyle(settings.defaultImageStyle || 'original');
     } catch (error) {
@@ -217,7 +219,7 @@ const HomeScreen = () => {
         requiredKeyword,
         tone: selectedTone,
         style: selectedStyle,
-        hashtagAmount,
+        hashtagCount, // 数値型に変更
         language,
         imageStyle
       });
@@ -402,18 +404,33 @@ const HomeScreen = () => {
           />
         </View>
 
-        {/* ハッシュタグの量 */}
+        {/* ハッシュタグの数 */}
         <View style={styles.inputGroup}>
-          <CustomPicker
-            label={t('form.hashtagAmount')}
-            selectedValue={hashtagAmount}
-            onValueChange={(value) => {
-              setHashtagAmount(value);
-              updateAndSaveSettings('defaultHashtagAmount', value);
+          <Text style={styles.label}>{t('form.hashtagCount')}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder={t('form.hashtagCountPlaceholder')}
+            value={String(hashtagCount)}
+            onChangeText={(text) => {
+              // 数値のみ入力可能
+              const numValue = parseInt(text) || 0;
+              // 範囲チェック（1〜30）
+              if (numValue >= HASHTAG_COUNT_MIN && numValue <= HASHTAG_COUNT_MAX) {
+                setHashtagCount(numValue);
+                updateAndSaveSettings('defaultHashtagCount', numValue);
+              } else if (text === '' || numValue === 0) {
+                // 空欄の場合はデフォルト値に戻す
+                setHashtagCount(HASHTAG_COUNT_DEFAULT);
+                updateAndSaveSettings('defaultHashtagCount', HASHTAG_COUNT_DEFAULT);
+              }
             }}
-            options={HASHTAG_AMOUNTS}
-            disabled={loading}
+            keyboardType="number-pad"
+            maxLength={2}
+            editable={!loading}
           />
+          <Text style={styles.helperText}>
+            {t('form.hashtagCountHelper', { min: HASHTAG_COUNT_MIN, max: HASHTAG_COUNT_MAX })}
+          </Text>
         </View>
 
             {/* 言語設定（API生成言語用 - UIロケールとは独立） */}
@@ -563,6 +580,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#d1d1d6'
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#8e8e93',
+    marginTop: 4
   },
   pickerContainer: {
     backgroundColor: '#fff',

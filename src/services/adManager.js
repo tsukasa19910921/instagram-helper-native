@@ -2,27 +2,41 @@
 // Google AdMob インタースティシャル広告の管理
 
 import { Platform } from 'react-native';
-import {
-  InterstitialAd,
-  AdEventType,
-  TestIds
-} from 'react-native-google-mobile-ads';
-import {
-  ADMOB_ANDROID_INTERSTITIAL_ID,
-  ADMOB_IOS_INTERSTITIAL_ID,
-  ADMOB_TEST_ANDROID_INTERSTITIAL_ID,
-  ADMOB_TEST_IOS_INTERSTITIAL_ID
-} from '@env';
+
+// ⚠️ テスト用フラグ: ExpoGoでテストする場合はtrueに設定
+// 開発ビルドや本番ビルドではfalseに戻すこと
+const DISABLE_ADS_FOR_EXPO_GO = false; // 本番ビルド用: 広告を有効化
 
 // 開発モードかどうか（__DEV__で判定）
 // 本番ビルド時には自動的にfalseになります
 const IS_DEV = __DEV__;
 
+// インタースティシャル広告のインスタンス
+// ExpoGoモードでは null のまま
+let interstitial = null;
+
 /**
- * 広告ユニットIDの取得
- * 開発中はテストIDを使用、本番ビルドでは本番IDを使用
+ * 広告ユニットIDを取得
+ * ExpoGoモード以外で実行される
  */
 const getAdUnitId = () => {
+  const { TestIds } = require('react-native-google-mobile-ads');
+
+  // 環境変数の取得を試行（ExpoGoでは失敗する可能性がある）
+  let envVars = {};
+  try {
+    envVars = require('@env');
+  } catch (e) {
+    console.warn('環境変数の読み込みに失敗。テストIDを使用します。');
+  }
+
+  const {
+    ADMOB_ANDROID_INTERSTITIAL_ID,
+    ADMOB_IOS_INTERSTITIAL_ID,
+    ADMOB_TEST_ANDROID_INTERSTITIAL_ID,
+    ADMOB_TEST_IOS_INTERSTITIAL_ID
+  } = envVars;
+
   if (IS_DEV) {
     // 開発中はテストIDを使用
     return Platform.select({
@@ -32,16 +46,11 @@ const getAdUnitId = () => {
   } else {
     // 本番環境では本番IDを使用
     return Platform.select({
-      ios: ADMOB_IOS_INTERSTITIAL_ID,
-      android: ADMOB_ANDROID_INTERSTITIAL_ID,
+      ios: ADMOB_IOS_INTERSTITIAL_ID || TestIds.INTERSTITIAL,
+      android: ADMOB_ANDROID_INTERSTITIAL_ID || TestIds.INTERSTITIAL,
     });
   }
 };
-
-// インタースティシャル広告のインスタンスを作成
-const interstitial = InterstitialAd.createForAdRequest(getAdUnitId(), {
-  requestNonPersonalizedAdsOnly: false, // パーソナライズ広告を許可
-});
 
 /**
  * 広告をロード（事前ロード）
@@ -49,6 +58,23 @@ const interstitial = InterstitialAd.createForAdRequest(getAdUnitId(), {
  */
 export const loadInterstitialAd = () => {
   return new Promise((resolve, reject) => {
+    // ExpoGoモードでは広告をスキップ
+    if (DISABLE_ADS_FOR_EXPO_GO) {
+      console.log('[ExpoGoモード] 広告ロードをスキップします');
+      resolve(true);
+      return;
+    }
+
+    // 開発ビルド・本番ビルド用のコード
+    const { InterstitialAd, AdEventType } = require('react-native-google-mobile-ads');
+
+    // 初回ロード時に広告インスタンスを作成
+    if (!interstitial) {
+      interstitial = InterstitialAd.createForAdRequest(getAdUnitId(), {
+        requestNonPersonalizedAdsOnly: false,
+      });
+    }
+
     // 既にロード済みの場合はすぐに解決
     if (interstitial.loaded) {
       console.log('広告は既にロード済みです');
@@ -92,7 +118,17 @@ export const loadInterstitialAd = () => {
  */
 export const showInterstitialAd = () => {
   return new Promise((resolve, reject) => {
-    if (!interstitial.loaded) {
+    // ExpoGoモードでは広告をスキップ
+    if (DISABLE_ADS_FOR_EXPO_GO) {
+      console.log('[ExpoGoモード] 広告表示をスキップします');
+      resolve();
+      return;
+    }
+
+    // 開発ビルド・本番ビルド用のコード
+    const { AdEventType } = require('react-native-google-mobile-ads');
+
+    if (!interstitial || !interstitial.loaded) {
       console.warn('広告がまだロードされていません');
       reject(new Error('広告がロードされていません'));
       return;
@@ -137,6 +173,12 @@ export const showInterstitialAd = () => {
  * 広告をプリロード（アプリ起動時に呼び出す）
  */
 export const preloadAd = async () => {
+  // ExpoGoモードでは広告をスキップ
+  if (DISABLE_ADS_FOR_EXPO_GO) {
+    console.log('[ExpoGoモード] 広告プリロードをスキップします');
+    return;
+  }
+
   try {
     console.log('広告のプリロードを開始します...');
     await loadInterstitialAd();

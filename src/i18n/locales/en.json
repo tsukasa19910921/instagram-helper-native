@@ -17,7 +17,9 @@
     "requiredKeywordPlaceholder": "e.g., Tokyo",
     "tone": "Text Tone",
     "style": "Text Style",
-    "hashtagAmount": "Hashtag Amount",
+    "hashtagCount": "Number of Hashtags",
+    "hashtagCountPlaceholder": "e.g., 3",
+    "hashtagCountHelper": "Enter a number between {{min}} and {{max}}",
     "language": "Language",
     "uiLanguage": "UI Language"
   },
@@ -68,11 +70,6 @@
     "masculine": "Masculine",
     "feminine": "Feminine",
     "neutral": "Neutral"
-  },
-  "hashtags": {
-    "many": "Many",
-    "normal": "Normal",
-    "few": "Few"
   },
   "languages": {
     "japanese": "Japanese",

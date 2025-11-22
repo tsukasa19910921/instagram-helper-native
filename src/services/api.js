@@ -18,7 +18,7 @@ const api = axios.create({
  * @param {string} params.requiredKeyword - 必須キーワード（オプション）
  * @param {string} params.tone - 文章のトーン
  * @param {string} params.style - 文章のスタイル
- * @param {string} params.hashtagAmount - ハッシュタグの量
+ * @param {number} params.hashtagCount - ハッシュタグの数（数値型）
  * @param {string} params.language - 言語設定
  * @param {string} params.imageStyle - 画像スタイル
  * @returns {Promise<Object>} 処理結果（テキストのみ、画像は含まない）
@@ -32,7 +32,7 @@ export const processImage = async (params) => {
       requiredKeyword: params.requiredKeyword || '',
       textStyle: params.tone,
       characterStyle: params.style,
-      hashtagAmount: params.hashtagAmount,
+      hashtagCount: params.hashtagCount, // ⚠️ 修正: hashtagAmount → hashtagCount (数値型で送信)
       language: params.language,
       imageStyle: params.imageStyle
     };
@@ -41,6 +41,7 @@ export const processImage = async (params) => {
       endpoint: '/process',
       imageBase64Length: payload.imageBase64.length,
       textStyle: payload.textStyle,
+      hashtagCount: payload.hashtagCount, // ハッシュタグ数をログ出力
       language: payload.language
     });
 

@@ -17,7 +17,9 @@
     "requiredKeywordPlaceholder": "例: 東京",
     "tone": "文章のトーン",
     "style": "文章のスタイル",
-    "hashtagAmount": "ハッシュタグの量",
+    "hashtagCount": "ハッシュタグの数",
+    "hashtagCountPlaceholder": "例: 3",
+    "hashtagCountHelper": "{{min}}〜{{max}}個の範囲で入力してください",
     "language": "言語",
     "uiLanguage": "UI言語"
   },
@@ -68,11 +70,6 @@
     "masculine": "男性的",
     "feminine": "女性的",
     "neutral": "中性的"
-  },
-  "hashtags": {
-    "many": "多い",
-    "normal": "普通",
-    "few": "少ない"
   },
   "languages": {
     "japanese": "日本語",

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Instagram投稿ジェネレーター",
     "slug": "instagram-post-generator",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -33,7 +33,7 @@
       "package": "com.github.tsukasa19910921.instagramgenerator",
       "edgeToEdgeEnabled": true
     },
-    "runtimeVersion": "1.0.2",
+    "runtimeVersion": "1.0.3",
     "plugins": [
       "expo-secure-store",
       [
